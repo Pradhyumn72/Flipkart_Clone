@@ -1,0 +1,6 @@
+.user-form{max-width:520px;margin:24px auto;background:#111a30;border:1px solid #223154;border-radius:12px;padding:20px}
+.user-form h2{margin:0 0 10px}
+.user-form .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.user-form .form-control{padding:10px;border-radius:8px;border:1px solid #25324d;background:#0e1730;color:#eaf0ff}
+.user-actions{display:flex;gap:10px}
+

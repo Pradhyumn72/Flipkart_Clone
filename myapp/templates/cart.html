@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Your Cart
+{% endblock title %}
+
+{% block hero %}
+<section class="cart-section">
+    <div class="container">
+        <h2>Your Shopping Cart</h2>
+        {% if items %}
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.title }}</td>
+                    <td>₹{{ item.price }}</td>
+                    <td>{{ item.qty }}</td>
+                    <td>₹{{ item.line_total }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="cart-summary">
+            <div class="subtotal">Subtotal: ₹{{ subtotal }}</div>
+            <a href="#" class="btn btn-buy">Proceed to Payment</a>
+            <a href="{% url 'index' %}" class="btn">Continue Shopping</a>
+        </div>
+        {% else %}
+        <p>Your cart is empty. <a href="{% url 'index' %}">Go shopping</a>.</p>
+        {% endif %}
+    </div>
+    
+</section>
+{% endblock hero %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
+{% endblock css %}
+
+

@@ -1,0 +1,14 @@
+.bg-shapes{position:absolute;inset:0;pointer-events:none}
+.shape{position:absolute;border-radius:50%;filter:blur(60px);opacity:.18}
+.shape-1{width:220px;height:220px;background:#2f7bff;left:10%;top:10%}
+.shape-2{width:280px;height:280px;background:#00d4ff;right:12%;top:20%}
+.shape-3{width:220px;height:220px;background:#7c3aed;left:40%;bottom:10%}
+.admin-badge{display:inline-block;margin-top:6px;padding:6px 10px;border:1px solid #2a3a60;border-radius:999px;color:#cfe0ff}
+.admin-stats{display:flex;gap:14px;margin-top:14px}
+.stat-item{background:#0e1730;border:1px solid #243357;border-radius:12px;padding:12px 14px;text-align:center}
+.stat-number{font-weight:800;color:#fff}
+.stat-label{font-size:12px;color:#9fb0d8}
+.password-wrapper{display:flex;align-items:center;gap:6px}
+.quick-access{display:flex;gap:10px;margin-top:10px}
+.quick-btn{padding:8px 10px;border:1px solid #2a3a60;border-radius:10px;background:#0e1730;color:#d9e6ff}
+
