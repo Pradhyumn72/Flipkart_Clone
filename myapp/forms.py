@@ -76,3 +76,31 @@ class UserLoginForm(forms.Form):
             raise forms.ValidationError("Enter a valid contact number")
         return digits_only
 
+
+class AdminLoginForm(forms.Form):
+    username = forms.CharField(
+        max_length=150,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': 'Admin Username', 'class': 'form-control'})
+    )
+    password = forms.CharField(
+        required=True,
+        widget=forms.PasswordInput(attrs={'placeholder': 'Password', 'class': 'form-control'})
+    )
+
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['title', 'label', 'price', 'image_url', 'description', 'category', 'stock', 'is_active']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Product Title'}),
+            'label': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Product Label'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Price'}),
+            'image_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Image URL'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Product Description', 'rows': 3}),
+            'category': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Category'}),
+            'stock': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Stock Quantity'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+

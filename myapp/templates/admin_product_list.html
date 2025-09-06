@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Manage Products
+{% endblock title %}
+
+{% block hero %}
+<div class="admin-product-list">
+    <div class="admin-header">
+        <h1>Manage Products</h1>
+        <div class="admin-actions">
+            <a href="{% url 'admin_product_create' %}" class="btn btn-primary">Add New Product</a>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Dashboard</a>
+            <a href="{% url 'admin_logout_custom' %}" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
+
+    <div class="products-table">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td>
+                        {% if product.image_url %}
+                        <div class="product-thumb" style="background-image: url('{{ product.image_url }}')"></div>
+                        {% else %}
+                        <div class="product-thumb no-image">No Image</div>
+                        {% endif %}
+                    </td>
+                    <td>{{ product.title }}</td>
+                    <td>₹{{ product.price }}</td>
+                    <td>{{ product.category }}</td>
+                    <td>{{ product.stock }}</td>
+                    <td>
+                        <span class="status-badge {% if product.is_active %}active{% else %}inactive{% endif %}">
+                            {% if product.is_active %}Active{% else %}Inactive{% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{% url 'admin_product_edit' product.id %}" class="btn btn-sm btn-primary">Edit</a>
+                            <a href="{% url 'admin_product_delete' product.id %}" class="btn btn-sm btn-danger">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 2rem; color: var(--muted);">
+                        No products found. <a href="{% url 'admin_product_create' %}">Create your first product</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock hero %}
+
+{% block css %}
+{{ block.super }}
+<style>
+.admin-product-list {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.admin-header h1 {
+    color: #fff;
+    margin: 0;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.admin-table th {
+    background: var(--hover);
+    color: #fff;
+    font-weight: 600;
+}
+
+.product-thumb {
+    width: 50px;
+    height: 50px;
+    border-radius: 0.5rem;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.product-thumb.no-image {
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: var(--muted);
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-badge.active {
+    background: var(--success);
+    color: #fff;
+}
+
+.status-badge.inactive {
+    background: var(--danger);
+    color: #fff;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+.btn-primary {
+    background: var(--brand);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+}
+
+.btn-secondary {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+    background: var(--hover);
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+</style>
+{% endblock css %}

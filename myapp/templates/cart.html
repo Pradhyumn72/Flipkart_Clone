@@ -8,7 +8,7 @@ Your Cart
 {% block hero %}
 <section class="cart-section">
     <div class="container">
-        <h2>Your Shopping Cart</h2>
+        <h2 class="section-title">Your Shopping Cart</h2>
         {% if items %}
         <table class="cart-table">
             <thead>
@@ -32,14 +32,19 @@ Your Cart
         </table>
         <div class="cart-summary">
             <div class="subtotal">Subtotal: ₹{{ subtotal }}</div>
-            <a href="#" class="btn btn-buy">Proceed to Payment</a>
-            <a href="{% url 'index' %}" class="btn">Continue Shopping</a>
+            <div>
+                <a href="#" class="btn btn-buy">Proceed to Payment</a>
+                <a href="{% url 'index' %}" class="btn btn-cart">Continue Shopping</a>
+            </div>
         </div>
         {% else %}
-        <p>Your cart is empty. <a href="{% url 'index' %}">Go shopping</a>.</p>
+        <div class="form-container" style="text-align: center;">
+            <h3>Your cart is empty</h3>
+            <p>Start shopping to add items to your cart!</p>
+            <a href="{% url 'index' %}" class="cta-button">Go Shopping</a>
+        </div>
         {% endif %}
     </div>
-    
 </section>
 {% endblock hero %}
 

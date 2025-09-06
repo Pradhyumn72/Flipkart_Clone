@@ -5,16 +5,17 @@ New User
 {% endblock title %}
 
 {% block hero  %}
-
-{% if x %}
-<form action="{% url 'register' %}" method="post" enctype="multipart/form-data" novalidate>
-    {% csrf_token %}
-    {{x.as_p}}
-    <button type="submit">Register</button>
-</form>
-{% endif %}
-
-
-
-
+<div class="form-container">
+    <h2 class="form-title">User Registration</h2>
+    {% if x %}
+    <form action="{% url 'register' %}" method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {{x.as_p}}
+        <button type="submit" class="login-btn">Register</button>
+    </form>
+    {% endif %}
+    <div class="form-links">
+        <p>Already have an account? <a href="{% url 'userlogin' %}">Login here</a></p>
+    </div>
+</div>
 {% endblock hero  %}

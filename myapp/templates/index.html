@@ -8,7 +8,6 @@ FlipKart - India's Shopping Destination
 
 
 {% block hero %}
-
     <!-- Header -->
     <header class="header">
         <div class="header-container">
@@ -23,8 +22,60 @@ FlipKart - India's Shopping Destination
                 <a href="{% url 'userlogin' %}" class="nav-link">Login</a>
                 <a href="{% url 'register' %}" class="nav-link">Register</a>
                 <a href="{% url 'view_cart' %}" class="nav-link">Cart</a>
+                <a href="{% url 'admin_login_custom' %}" class="nav-link">Admin</a>
             </nav>
-    <!-- Products  -->
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to Flipkart</h1>
+            <p>Discover Amazing Products at Unbeatable Prices</p>
+            <a href="#products" class="cta-button">Shop Now</a>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories">
+        <div class="container">
+            <h2 class="section-title">Shop by Category</h2>
+            <div class="categories-grid">
+                <div class="category-card">
+                    <span class="category-icon">📱</span>
+                    <h3>Electronics</h3>
+                    <p>Mobiles, Laptops & More</p>
+                </div>
+                <div class="category-card">
+                    <span class="category-icon">👕</span>
+                    <h3>Fashion</h3>
+                    <p>Clothing & Accessories</p>
+                </div>
+                <div class="category-card">
+                    <span class="category-icon">🏠</span>
+                    <h3>Home & Garden</h3>
+                    <p>Furniture & Decor</p>
+                </div>
+                <div class="category-card">
+                    <span class="category-icon">📚</span>
+                    <h3>Books</h3>
+                    <p>All Genres Available</p>
+                </div>
+                <div class="category-card">
+                    <span class="category-icon">🎮</span>
+                    <h3>Gaming</h3>
+                    <p>Consoles & Games</p>
+                </div>
+                <div class="category-card">
+                    <span class="category-icon">💄</span>
+                    <h3>Beauty</h3>
+                    <p>Cosmetics & Skincare</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products -->
     <section class="products" id="products">
         <div class="container">
             <h2 class="section-title">Featured Products</h2>
@@ -52,7 +103,7 @@ FlipKart - India's Shopping Destination
             </div>
         </div>
     </section>
-    {% endblock hero %}
+{% endblock hero %}
 
 {% block css %}
 {{ block.super }}

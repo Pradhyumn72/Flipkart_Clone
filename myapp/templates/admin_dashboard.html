@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Admin Dashboard
+{% endblock title %}
+
+{% block hero %}
+<div class="admin-dashboard">
+    <div class="admin-header">
+        <h1>Admin Dashboard</h1>
+        <div class="admin-info">
+            <span>Welcome, {{ admin_username }}</span>
+            <a href="{% url 'admin_logout_custom' %}" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
+
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <h3>{{ total_products }}</h3>
+            <p>Total Products</p>
+        </div>
+        <div class="stat-card">
+            <h3>{{ active_products }}</h3>
+            <p>Active Products</p>
+        </div>
+        <div class="stat-card">
+            <h3>{{ total_products|add:"-"|add:active_products }}</h3>
+            <p>Inactive Products</p>
+        </div>
+    </div>
+
+    <div class="dashboard-actions">
+        <a href="{% url 'admin_product_create' %}" class="btn btn-primary">Add New Product</a>
+        <a href="{% url 'admin_product_list' %}" class="btn btn-secondary">Manage Products</a>
+        <a href="{% url 'index' %}" class="btn btn-outline">View Store</a>
+    </div>
+
+    <div class="recent-products">
+        <h2>Recent Products</h2>
+        <div class="products-grid">
+            {% for product in products|slice:":6" %}
+            <div class="product-card">
+                <div class="product-media">
+                    <div class="product-image" {% if product.image_url %}style="background-image: url('{{ product.image_url }}')"{% endif %}></div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">{{ product.title }}</h3>
+                    <div class="product-price">₹{{ product.price }}</div>
+                    <div class="product-actions">
+                        <a href="{% url 'admin_product_edit' product.id %}" class="btn btn-sm">Edit</a>
+                        <a href="{% url 'admin_product_delete' product.id %}" class="btn btn-sm btn-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock hero %}
+
+{% block css %}
+{{ block.super }}
+<style>
+.admin-dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.admin-header h1 {
+    color: #fff;
+    margin: 0;
+}
+
+.admin-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.admin-info span {
+    color: var(--muted);
+}
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.stat-card h3 {
+    font-size: 2rem;
+    color: var(--brand);
+    margin: 0 0 0.5rem;
+}
+
+.stat-card p {
+    color: var(--muted);
+    margin: 0;
+}
+
+.dashboard-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+.btn-primary {
+    background: var(--brand);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+}
+
+.btn-secondary {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+    background: var(--hover);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--brand);
+    border: 1px solid var(--brand);
+}
+
+.btn-outline:hover {
+    background: var(--brand);
+    color: #fff;
+}
+
+.recent-products h2 {
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+</style>
+{% endblock css %}
