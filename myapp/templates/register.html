@@ -6,4 +6,15 @@ New User
 
 {% block hero  %}
 
+{% if x %}
+<form action="{% url 'register' %}" method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    {{x.as_p}}
+    <button type="submit">Register</button>
+</form>
+{% endif %}
+
+
+
+
 {% endblock hero  %}

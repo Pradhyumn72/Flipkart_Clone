@@ -41,17 +41,18 @@ def adminlogin(req):
 
 
 def register(req):
+    print(req.method)
     if req.method=='POST':
         form=Registerform(req.POST)
      
         if form.is_valid():
-            email=form.cleaned_data['email']
-            password=form.cleaned_data['password']
-            if email==e and password==p:
-                return render(req,'userlogin.html')
-            else:
-                x=
-
+            form.save()
+            fm=Registerform()
+            return render(req,'userlogin.html',{'x':form})
+        else:
+            fm=Registerform()
+            return render(req,'register.html',{'x':fm})
+    return render(req,'register.html')
 
 def userlogin(req):
     if req.method == 'POST':

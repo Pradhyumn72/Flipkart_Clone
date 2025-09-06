@@ -13,7 +13,6 @@ class Register(models.Model):
 
 
 class User(models.Model):
-    name = models.CharField(max_length=60)
     email = models.EmailField(unique=True)  
     password = models.CharField(max_length=255) 
 
