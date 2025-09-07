@@ -8,13 +8,12 @@ class Register(models.Model):
     email=models.EmailField(unique=True)
     contact=models.IntegerField(unique=True)
     password=models.CharField(max_length=16)
-    cpassword=models.CharField(max_length=16)
 
 
 
 class User(models.Model):
     email = models.EmailField(unique=True)  
-    password = models.CharField(max_length=255) 
+    password = models.CharField(max_length=16) 
 
 
 class Admin(models.Model):

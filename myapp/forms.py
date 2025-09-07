@@ -1,4 +1,5 @@
 from django import forms 
+from .models import Register
 from django.core.exceptions import ValidationError
 
 class Product(forms.Form):
@@ -31,32 +32,32 @@ class AdminLoginForm(forms.Form):
             raise forms.ValidationError("Invalid username or password")
         return cleaned_data
 
-class Registerform(forms.Form):
-    email=forms.EmailField(
+class RegisterForm(forms.ModelForm):
+    cpassword = forms.CharField(
         required=True,
-        widget=forms.EmailInput(attrs={'placeholder':"Enter Email ID"})
+        widget=forms.PasswordInput(attrs={"placeholder": "Confirm Password"})
     )
-    username = forms.CharField(
-        max_length=100,
-        required=True,
-        widget=forms.TextInput(attrs={'placeholder': 'Enter Username'})
-    )
-    
-    contact=forms.CharField(
-        
-        required=True,
-        max_length=10,
-        widget=forms.TextInput(attrs={'placeholder':"Enter Contact Number"})
-        )
-    
-    password = forms.CharField(
-        required=True,
-        widget=forms.PasswordInput(attrs={'placeholder': 'Enter Password'})
-    )
-    cpassword=forms.CharField(
-        required=True,
-        widget=forms.PasswordInput(attrs={"placeholder":"Enter your confirm Password"})
-    )
+
+    class Meta:
+        model = Register
+        fields = ['name', 'email', 'contact', 'password']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Enter Name'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'Enter Email'}),
+            'contact': forms.NumberInput(attrs={'placeholder': 'Enter Contact'}),
+            'password': forms.PasswordInput(attrs={'placeholder': 'Enter Password'}),
+        }
+
+    # validate password match
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        cpassword = cleaned_data.get("cpassword")
+
+        if password and cpassword and password != cpassword:
+            self.add_error("cpassword", "Passwords do not match")
+
+        return cleaned_data
 
 class UserLoginForm(forms.Form):
     email = forms.EmailField(

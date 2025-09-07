@@ -1,6 +1,4 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django import *
-from django.contrib.auth.hashers import check_password, make_password
 from .forms import AdminLoginForm, UserLoginForm, Registerform, ProductForm
 from .models import Product, AdminUser
 from django.contrib import messages
@@ -8,8 +6,6 @@ from django.contrib import messages
 
 
 # Create your views here.
-def register(req):
-    pass
 def _product_catalog():
     return [
         {"id": 1, "title": "Apple iPhone 14 Pro (128GB)", "label": "iPhone 14 Pro", "price": 129900},
@@ -26,7 +22,6 @@ def index(req):
 
 def adhome(req):
     return render(req,'adhome.html')
-from django.contrib import messages
 
 def adminlogin(req):
     if req.method == 'POST':
