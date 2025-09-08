@@ -30,11 +30,11 @@ urlpatterns = [
     path('index/', views.index, name='index'),
     
     # Admin URLs
-    path('admin-login/', views.admin_login_custom, name='admin_login_custom'),
-    path('admin-logout/', views.admin_logout_custom, name='admin_logout_custom'),
-    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
-    path('admin/products/', views.admin_product_list, name='admin_product_list'),
-    path('admin/products/create/', views.admin_product_create, name='admin_product_create'),
-    path('admin/products/edit/<int:product_id>/', views.admin_product_edit, name='admin_product_edit'),
-    path('admin/products/delete/<int:product_id>/', views.admin_product_delete, name='admin_product_delete'),
+    # path('admin-login/', views.admin_login_custom, name='admin_login_custom'),
+    # path('admin-logout/', views.admin_logout_custom, name='admin_logout_custom'),
+    # path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    # path('admin/products/', views.admin_product_list, name='admin_product_list'),
+    # path('admin/products/create/', views.admin_product_create, name='admin_product_create'),
+    # path('admin/products/edit/<int:product_id>/', views.admin_product_edit, name='admin_product_edit'),
+    # path('admin/products/delete/<int:product_id>/', views.admin_product_delete, name='admin_product_delete'),
 ]

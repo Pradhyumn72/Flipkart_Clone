@@ -22,7 +22,6 @@ FlipKart - India's Shopping Destination
                 <a href="{% url 'userlogin' %}" class="nav-link">Login</a>
                 <a href="{% url 'register' %}" class="nav-link">Register</a>
                 <a href="{% url 'view_cart' %}" class="nav-link">Cart</a>
-                <a href="{% url 'admin_login_custom' %}" class="nav-link">Admin</a>
             </nav>
         </div>
     </header>
@@ -80,7 +79,7 @@ FlipKart - India's Shopping Destination
         <div class="container">
             <h2 class="section-title">Featured Products</h2>
             <div class="products-grid">
-                {% for p in products %}
+                {% for p in product %}
                 <div class="product-card">
                     <div class="product-media">
                         <div class="product-image" aria-label="{{ p.label }}" {% if p.image_url %}style="background-image: url('{{ p.image_url }}')"{% endif %}></div>

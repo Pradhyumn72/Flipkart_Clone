@@ -2,6 +2,9 @@ from django.db import models
 from cloudinary_storage.storage import MediaCloudinaryStorage
 
 # Create your models here.
+class User(models.Model):
+    email = models.EmailField(unique=True)  
+    password = models.CharField(max_length=16)
 
 class Register(models.Model):
     name=models.CharField(max_length=60)
@@ -11,9 +14,7 @@ class Register(models.Model):
 
 
 
-class User(models.Model):
-    email = models.EmailField(unique=True)  
-    password = models.CharField(max_length=16) 
+
 
 
 class Admin(models.Model):

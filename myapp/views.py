@@ -1,101 +1,120 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import AdminLoginForm, UserLoginForm, Registerform, ProductForm
-from .models import Product, AdminUser
+from .forms import AdminLoginForm, UserLoginForm, RegisterForm, ProductForm
+from .models import Product, AdminUser,Register
 from django.contrib import messages
 
 
 
 # Create your views here.
-def _product_catalog():
-    return [
-        {"id": 1, "title": "Apple iPhone 14 Pro (128GB)", "label": "iPhone 14 Pro", "price": 129900},
-        {"id": 2, "title": "Dell XPS 13 (i7, 16GB)", "label": "Dell XPS 13", "price": 115990},
-        {"id": 3, "title": "Nike Air Max 270 React", "label": "Nike Air Max", "price": 12795},
-        {"id": 4, "title": "Samsung 55\" 4K Ultra HD TV", "label": "Samsung TV", "price": 52990},
-        {"id": 5, "title": "Adidas Originals Track Jacket", "label": "Adidas Jacket", "price": 4999},
-        {"id": 6, "title": "Sony PlayStation 5 Console", "label": "PlayStation 5", "price": 49990},
-    ]
-
-
 def index(req):
-    return render(req,'index.html', {"products": _product_catalog()})
+    products = Product.objects.all() 
+    return render(req, 'index.html', {"products": products})
 
 def adhome(req):
     return render(req,'adhome.html')
 
-def adminlogin(req):
-    if req.method == 'POST':
-        form = AdminLoginForm(req.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
 
-            if username == "admin" and password == "ad@1234":
-                messages.success(req, "Admin login successful!")
-                return redirect('index')   
-            else:
-                messages.error(req, "Invalid credentials")
-    else:
-        form = AdminLoginForm()
+def dashboard(req):
+    products = Product.objects.order_by('-created_at') 
+    total_products = products.count()
+    active_products = products.filter(is_active=True).count()
 
-    return render(req, 'adhome.html', {'form': form})
+    return render(req, 'admin_dashboard.html', {
+        'admin_username': req.session.get('admin_username', 'Admin'),
+        'total_products': total_products,
+        'active_products': active_products,
+        'products': products
+    })
+ 
+
+
+
+
 
 
 
 def register(req):
-    print(req.method)
-    if req.method=='POST':
-        form=Registerform(req.POST)
-     
+    if req.method == 'POST':
+        form = RegisterForm(req.POST)
         if form.is_valid():
-            form.save()
-            fm=Registerform()
-            return render(req,'userlogin.html',{'x':form})
+            # Extract cleaned data from form
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            contact = form.cleaned_data['contact']
+            password = form.cleaned_data['password']
+
+            # Save using objects.create
+            Register.objects.create(
+                name=name,
+                email=email,
+                contact=contact,
+                password=password   # ⚠️ plain text, hash if needed
+            )
+
+            return render(req, 'userlogin.html', {'x': form})
         else:
-            fm=Registerform()
-            return render(req,'register.html',{'x':fm})
+            print(form.errors)  # Debugging
+            return render(req, 'register.html', {'x': form})
     else:
-        fm=Registerform()
-        return render(req,'register.html',{'x':fm})
+        form = RegisterForm()
+        return render(req, 'register.html', {'x': form})
+
+
+
+
 
 def userlogin(req):
     if req.method == 'POST':
         form = UserLoginForm(req.POST)
         if form.is_valid():
             req.session['user'] = {
+                'id': form.cleaned_data['user'].id,
                 'email': form.cleaned_data['email'],
-                'username': form.cleaned_data['username'],
-                'contact_number': form.cleaned_data['contact_number'],
             }
             messages.success(req, "User login successful!")
-            return redirect('index')
+            return redirect('index')  
         else:
             messages.error(req, "Please correct the errors below")
     else:
         form = UserLoginForm()
     return render(req, 'userlogin.html', {'form': form})
 
+
+
+
+
+
 def _get_cart_nested(session):
-    #  it ensures all keys exist
+    # ensure cart dict exists
     cart = session.get('cart')
     if not isinstance(cart, dict):
         cart = {}
+
+    # ensure sub-keys exist
     if 'cartt' not in cart or not isinstance(cart.get('cartt'), dict):
         cart['cartt'] = {}
     if 'carttt' not in cart['cartt'] or not isinstance(cart['cartt'].get('carttt'), list):
         cart['cartt']['carttt'] = []
 
-    # set user id from session user if present, else default will be run
-    user_id = 1
+    # set user id (fall back to None if not logged in)
     user = session.get('user')
     if user:
-        user_id = 1  # placeholder; in real app map to DB user id
+        user_id = user.get('email')  # from your login session structure
+    else:
+        user_id = None
+
+    # assign user_id into cart
     cart['user_id'] = user_id
     cart['cartt']['user_id'] = user_id
 
+    # save back into session
     session['cart'] = cart
     session.modified = True
+
     return cart
+
+
+
 
 def add_to_cart(req, product_id):
     if req.method == 'POST':
@@ -106,6 +125,11 @@ def add_to_cart(req, product_id):
         messages.success(req, f"Added to cart: #{product_id}")
     return redirect('index')
 
+
+
+
+
+
 def view_cart(req):
     cart = _get_cart_nested(req.session)
     product_ids = cart['cartt']['carttt']
@@ -114,7 +138,7 @@ def view_cart(req):
     for pid in product_ids:
         qty_by_id[pid] = qty_by_id.get(pid, 0) + 1
     # build items with details
-    catalog = {p['id']: p for p in _product_catalog()}
+    catalog = {p['id']: p for p in product_catalog()}
     items = []
     subtotal = 0
     for pid, qty in qty_by_id.items():
@@ -134,33 +158,27 @@ def view_cart(req):
 
 
 # Admin Views
-def admin_login(request):
-    if request.method == 'POST':
-        form = AdminLoginForm(request.POST)
+
+def adminlogin(req):
+    if req.method == 'POST':
+        form = AdminLoginForm(req.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
 
-            try:
-                admin = AdminUser.objects.get(username=username, is_active=True)
-                if check_password(password, admin.password_hash):
-                    request.session['is_admin'] = True
-                    request.session['admin_name'] = admin.username
-                    messages.success(request, "Welcome, Admin!")
-                    return redirect('admin_dashboard')
-                else:
-                    messages.error(request, "Invalid password")
-            except AdminUser.DoesNotExist:
-                messages.error(request, "User not found")
+            if username == "admin" and password == "ad@1234":
+                messages.success(req, "Admin login successful!")
+                return redirect('admin_dashboard')   
+            else:
+                messages.error(req, "Invalid credentials")
     else:
         form = AdminLoginForm()
-    return render(request, 'admin_login.html', {'form': form})
+
+    return render(req, 'adhome.html', {'form': form})
 
 
-def admin_logout(request):
-    request.session.flush()  # clears all session data
-    messages.success(request, "Logged out successfully")
-    return redirect('admin_login')
+
+
 
 
 # --- SIMPLE DASHBOARD ---
@@ -174,6 +192,17 @@ def admin_dashboard(request):
         'total_products': products.count(),
         'admin_name': request.session.get('admin_name')
     })
+
+
+def product_catalog(req):
+    if req.method == "POST":
+        form = ProductForm(req.POST, req.FILES)
+        if form.is_valid():
+            form.save()   
+            return redirect('dashboard')  
+    else:
+        form = ProductForm()
+    return render(req, 'admin_product_create.html', {'form': form})
 
 
 # ---  LIST ---
@@ -229,3 +258,12 @@ def product_delete(request, pk):
         messages.success(request, "Product deleted!")
         return redirect('product_list')
     return render(request, 'product_confirm_delete.html', {'product': product})
+
+
+
+
+
+def admin_logout(request):
+    request.session.flush()  # clears all session data
+    messages.success(request, "Logged out successfully")
+    return redirect('admin_login')
