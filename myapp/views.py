@@ -48,7 +48,7 @@ def register(req):
                 name=name,
                 email=email,
                 contact=contact,
-                password=password   # ⚠️ plain text, hash if needed
+                password=password    
             )
 
             return render(req, 'userlogin.html', {'x': form})
