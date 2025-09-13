@@ -3,12 +3,16 @@ from .forms import AdminLoginForm, UserLoginForm, RegisterForm, ProductForm
 from .models import Product, AdminUser,Register
 from django.contrib import messages
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Product, Admin
+from .forms import ProductForm, AdminLoginForm
 
 
 # Create your views here.
 def index(req):
-    products = Product.objects.all() 
-    return render(req, 'index.html', {"products": products})
+    products = Product.objects.filter(is_active=True)
+    return render(req, "index.html", {"products": products})
 
 def adhome(req):
     return render(req,'adhome.html')
@@ -159,105 +163,192 @@ def view_cart(req):
 
 # Admin Views
 
-def adminlogin(req):
-    if req.method == 'POST':
-        form = AdminLoginForm(req.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
+# def adminlogin(req):
+#     if req.method == 'POST':
+#         form = AdminLoginForm(req.POST)
+#         if form.is_valid():
+#             username = form.cleaned_data['username']
+#             password = form.cleaned_data['password']
 
-            if username == "admin" and password == "ad@1234":
-                messages.success(req, "Admin login successful!")
-                return redirect('admin_dashboard')   
-            else:
-                messages.error(req, "Invalid credentials")
+#             if username == "admin" and password == "ad@1234":
+#                 messages.success(req, "Admin login successful!")
+#                 return redirect('admin_dashboard')   
+#             else:
+#                 messages.error(req, "Invalid credentials")
+#     else:
+#         form = AdminLoginForm()
+
+#     return render(req, 'adhome.html', {'form': form})
+
+
+
+
+
+
+# # --- SIMPLE DASHBOARD ---
+# def admin_dashboard(request):
+#     if not request.session.get('is_admin'):
+#         return redirect('admin_login')
+
+#     products = Product.objects.all()
+#     return render(request, 'admin_dashboard.html', {
+#         'products': products,
+#         'total_products': products.count(),
+#         'admin_name': request.session.get('admin_name')
+#     })
+
+
+# def product_catalog(req):
+#     if req.method == "POST":
+#         form = ProductForm(req.POST, req.FILES)
+#         if form.is_valid():
+#             form.save()   
+#             return redirect('dashboard')  
+#     else:
+#         form = ProductForm()
+#     return render(req, 'admin_product_create.html', {'form': form})
+
+
+# # ---  LIST ---
+# def product_list(request):
+#     if not request.session.get('is_admin'):
+#         return redirect('admin_login')
+
+#     products = Product.objects.all().order_by('-created_at')
+#     return render(request, 'product_list.html', {'products': products})
+
+
+# # ---  CREATE ---
+# def product_create(request):
+#     if not request.session.get('is_admin'):
+#         return redirect('admin_login')
+
+#     if request.method == 'POST':
+#         form = ProductForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, "Product added!")
+#             return redirect('product_list')
+#     else:
+#         form = ProductForm()
+#     return render(request, 'product_form.html', {'form': form, 'title': 'Add Product'})
+
+
+# # ---  UPDATE ---
+# def product_edit(request, pk):
+#     if not request.session.get('is_admin'):
+#         return redirect('admin_login')
+
+#     product = get_object_or_404(Product, pk=pk)
+#     if request.method == 'POST':
+#         form = ProductForm(request.POST, instance=product)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, "Product updated!")
+#             return redirect('product_list')
+#     else:
+#         form = ProductForm(instance=product)
+#     return render(request, 'product_form.html', {'form': form, 'title': 'Edit Product'})
+
+
+# # ---  DELETE ---
+# def product_delete(request, pk):
+#     if not request.session.get('is_admin'):
+#         return redirect('admin_login')
+
+#     product = get_object_or_404(Product, pk=pk)
+#     if request.method == 'POST':
+#         product.delete()
+#         messages.success(request, "Product deleted!")
+#         return redirect('product_list')
+#     return render(request, 'product_confirm_delete.html', {'product': product})def admin_login(request):
+    if request.method == "POST":
+        form = AdminLoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+
+            try:
+                admin = Admin.objects.get(name=username, password=password)
+                request.session["admin_id"] = admin.id
+                return redirect("admin_dashboard")
+            except Admin.DoesNotExist:
+                messages.error(request, "Invalid credentials")
     else:
         form = AdminLoginForm()
 
-    return render(req, 'adhome.html', {'form': form})
+    return render(request, "admin_login.html", {"form": form})
 
 
-
-
-
-
-# --- SIMPLE DASHBOARD ---
+# -------------------
+# Admin Dashboard
+# -------------------
 def admin_dashboard(request):
-    if not request.session.get('is_admin'):
-        return redirect('admin_login')
+    if "admin_id" not in request.session:
+        return redirect("admin_login")
 
     products = Product.objects.all()
-    return render(request, 'admin_dashboard.html', {
-        'products': products,
-        'total_products': products.count(),
-        'admin_name': request.session.get('admin_name')
-    })
+    return render(request, "admin_dashboard.html", {"products": products})
 
 
-def product_catalog(req):
-    if req.method == "POST":
-        form = ProductForm(req.POST, req.FILES)
-        if form.is_valid():
-            form.save()   
-            return redirect('dashboard')  
-    else:
-        form = ProductForm()
-    return render(req, 'admin_product_create.html', {'form': form})
+# -------------------
+# Add Product
+# -------------------
+def add_product(request):
+    if "admin_id" not in request.session:
+        return redirect("admin_login")
 
-
-# ---  LIST ---
-def product_list(request):
-    if not request.session.get('is_admin'):
-        return redirect('admin_login')
-
-    products = Product.objects.all().order_by('-created_at')
-    return render(request, 'product_list.html', {'products': products})
-
-
-# ---  CREATE ---
-def product_create(request):
-    if not request.session.get('is_admin'):
-        return redirect('admin_login')
-
-    if request.method == 'POST':
-        form = ProductForm(request.POST)
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            messages.success(request, "Product added!")
-            return redirect('product_list')
+            messages.success(request, "Product added successfully!")
+            return redirect("admin_dashboard")
     else:
         form = ProductForm()
-    return render(request, 'product_form.html', {'form': form, 'title': 'Add Product'})
+
+    return render(request, "add_product.html", {"form": form})
 
 
-# ---  UPDATE ---
-def product_edit(request, pk):
-    if not request.session.get('is_admin'):
-        return redirect('admin_login')
+# -------------------
+# Edit Product
+# -------------------
+def edit_product(request, pk):
+    if "admin_id" not in request.session:
+        return redirect("admin_login")
 
     product = get_object_or_404(Product, pk=pk)
-    if request.method == 'POST':
-        form = ProductForm(request.POST, instance=product)
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             form.save()
-            messages.success(request, "Product updated!")
-            return redirect('product_list')
+            messages.success(request, "Product updated successfully!")
+            return redirect("admin_dashboard")
     else:
         form = ProductForm(instance=product)
-    return render(request, 'product_form.html', {'form': form, 'title': 'Edit Product'})
+
+    return render(request, "edit_product.html", {"form": form})
 
 
-# ---  DELETE ---
-def product_delete(request, pk):
-    if not request.session.get('is_admin'):
-        return redirect('admin_login')
+# -------------------
+# Delete Product
+# -------------------
+def delete_product(request, pk):
+    if "admin_id" not in request.session:
+        return redirect("admin_login")
 
     product = get_object_or_404(Product, pk=pk)
-    if request.method == 'POST':
-        product.delete()
-        messages.success(request, "Product deleted!")
-        return redirect('product_list')
-    return render(request, 'product_confirm_delete.html', {'product': product})
+    product.delete()
+    messages.success(request, "Product deleted successfully!")
+    return redirect("admin_dashboard")
+
+
+# -------------------
+# Show products in index.html
+# -------------------
+def index(request):
+    products = Product.objects.filter(is_active=True)
+    return render(request, "index.html", {"products": products})
 
 
 
