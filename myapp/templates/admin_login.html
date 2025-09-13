@@ -8,18 +8,13 @@ Admin Login
 {% block hero %}
 <div class="form-container">
     <h2 class="form-title">Admin Login</h2>
-    <form method="post" action="{% url 'admin_login_custom' %}">
+
+    <form method="post">
         {% csrf_token %}
-        <div class="form-group">
-            <label for="id_username">Username</label>
-            {{ form.username }}
-        </div>
-        <div class="form-group">
-            <label for="id_password">Password</label>
-            {{ form.password }}
-        </div>
-        <button type="submit" class="login-btn">Login</button>
+        {{ form}}
+        <button type="submit">Login</button>
     </form>
+
     <div class="form-links">
         <p><a href="{% url 'index' %}">← Back to Store</a></p>
     </div>

@@ -36,72 +36,21 @@ FlipKart - India's Shopping Destination
     </section>
 
     <!-- Categories -->
-    <section class="categories">
-        <div class="container">
-            <h2 class="section-title">Shop by Category</h2>
-            <div class="categories-grid">
-                <div class="category-card">
-                    <span class="category-icon">📱</span>
-                    <h3>Electronics</h3>
-                    <p>Mobiles, Laptops & More</p>
-                </div>
-                <div class="category-card">
-                    <span class="category-icon">👕</span>
-                    <h3>Fashion</h3>
-                    <p>Clothing & Accessories</p>
-                </div>
-                <div class="category-card">
-                    <span class="category-icon">🏠</span>
-                    <h3>Home & Garden</h3>
-                    <p>Furniture & Decor</p>
-                </div>
-                <div class="category-card">
-                    <span class="category-icon">📚</span>
-                    <h3>Books</h3>
-                    <p>All Genres Available</p>
-                </div>
-                <div class="category-card">
-                    <span class="category-icon">🎮</span>
-                    <h3>Gaming</h3>
-                    <p>Consoles & Games</p>
-                </div>
-                <div class="category-card">
-                    <span class="category-icon">💄</span>
-                    <h3>Beauty</h3>
-                    <p>Cosmetics & Skincare</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<div>
+    {% for product in products %}
+    <div style="border:1px solid #ddd; margin:10px; padding:10px;">
+        <h3>{{ product.title }}</h3>
+        <p>{{ product.description }}</p>
+        <p>Price: ₹{{ product.price }}</p>
+        {% if product.image %}
+            <img src="{{ product.image.url }}" width="150">
+        {% elif product.image_url %}
+            <img src="{{ product.image_url }}" width="150">
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
 
-    <!-- Products -->
-    <section class="products" id="products">
-        <div class="container">
-            <h2 class="section-title">Featured Products</h2>
-            <div class="products-grid">
-                {% for p in product %}
-                <div class="product-card">
-                    <div class="product-media">
-                        <div class="product-image" aria-label="{{ p.label }}" {% if p.image_url %}style="background-image: url('{{ p.image_url }}')"{% endif %}></div>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title">{{ p.title }}</h3>
-                        <div class="product-price">₹{{ p.price }}</div>
-                        <div class="product-actions">
-                            <form method="post" action="{% url 'add_to_cart' p.id %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="title" value="{{ p.title }}">
-                                <input type="hidden" name="price" value="{{ p.price }}">
-                                <button type="submit" class="btn btn-cart">Add to Cart</button>
-                            </form>
-                            <a href="{% url 'view_cart' %}" class="btn btn-buy">Buy Now</a>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </section>
 {% endblock hero %}
 
 {% block css %}

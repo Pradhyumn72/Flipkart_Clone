@@ -137,28 +137,33 @@ def add_to_cart(req, product_id):
 def view_cart(req):
     cart = _get_cart_nested(req.session)
     product_ids = cart['cartt']['carttt']
-    # total quantity quantity per product id
+
+    # total quantity per product id
     qty_by_id = {}
     for pid in product_ids:
         qty_by_id[pid] = qty_by_id.get(pid, 0) + 1
-    # build items with details
-    catalog = {p['id']: p for p in product_catalog()}
+
+    # fetch products from DB
+    products = Product.objects.filter(id__in=product_ids)
+    catalog = {p.id: p for p in products}
+
     items = []
     subtotal = 0
     for pid, qty in qty_by_id.items():
         if pid in catalog:
             info = catalog[pid]
-            line_total = info['price'] * qty
+            line_total = info.price * qty
             subtotal += line_total
             items.append({
                 'id': pid,
-                'title': info['title'],
-                'price': info['price'],
+                'title': info.title,
+                'price': info.price,
                 'qty': qty,
                 'line_total': line_total,
             })
 
     return render(req, 'cart.html', {'items': items, 'subtotal': subtotal})
+
 
 
 # Admin Views
@@ -283,6 +288,25 @@ def view_cart(req):
 # -------------------
 # Admin Dashboard
 # -------------------
+
+def admin_login(request):
+    if request.method == "POST":
+        form = AdminLoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            if username == "admin" and password == "ad@1234":
+                request.session["is_admin"] = True
+                return render(request,'admin_dashboard.html')
+            else:
+                messages.error(request, "Invalid credentials")
+    else:
+        form = AdminLoginForm()
+
+    return render(request, "admin_login.html", {"form": form})
+
+
+
 def admin_dashboard(request):
     if "admin_id" not in request.session:
         return redirect("admin_login")
@@ -346,7 +370,7 @@ def delete_product(request, pk):
 # -------------------
 # Show products in index.html
 # -------------------
-def index(request):
+def indexx(request):
     products = Product.objects.filter(is_active=True)
     return render(request, "index.html", {"products": products})
 
