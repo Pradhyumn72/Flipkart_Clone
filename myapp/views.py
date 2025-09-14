@@ -334,9 +334,9 @@ def add_product(request):
     return render(request, "add_product.html", {"form": form})
 
 
-# -------------------
+
 # Edit Product
-# -------------------
+
 def edit_product(request, pk):
     if "admin_id" not in request.session:
         return redirect("admin_login")
