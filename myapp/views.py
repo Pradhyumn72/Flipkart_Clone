@@ -239,7 +239,7 @@ def view_cart(req):
 #     return render(request, 'product_form.html', {'form': form, 'title': 'Add Product'})
 
 
-# # ---  UPDATE ---
+# --  UPDATE --
 # def product_edit(request, pk):
 #     if not request.session.get('is_admin'):
 #         return redirect('admin_login')
