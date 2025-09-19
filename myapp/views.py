@@ -68,14 +68,18 @@ def register(req):
 
 
 def userlogin(req):
+    print(req.method)
     if req.method == 'POST':
+        
         form = UserLoginForm(req.POST)
         if form.is_valid():
+            print("hello")
             req.session['user'] = {
                 'id': form.cleaned_data['user'].id,
                 'email': form.cleaned_data['email'],
             }
             messages.success(req, "User login successful!")
+            print("hello")
             return redirect('index')  
         else:
             messages.error(req, "Please correct the errors below")

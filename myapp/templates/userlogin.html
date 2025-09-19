@@ -8,7 +8,7 @@ User Login
 {% block hero %}
 <div class="form-container">
     <h2 class="form-title">User Login</h2>
-    <form method="post" action="{% url 'userlogin' %}">
+    <form  action="{% url 'userlogin' %}" method="post">
         {% csrf_token %}
         <div class="form-group">
             <label for="id_email">Email</label>
