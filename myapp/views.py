@@ -64,9 +64,6 @@ def register(req):
         return render(req, 'register.html', {'x': form})
 
 
-
-
-
 def userlogin(req):
     print(req.method)
     if req.method == 'POST':
